@@ -21,6 +21,9 @@ disable.post('/disable', (req, res) => {
            }
        })
    }
+   else{
+       res.status(400).send('Invalid arguments; make sure you added the arguments inside the body of the request.')
+   }
 });
 
 module.exports = disable;
