@@ -18,6 +18,9 @@ let UserSchema = new mongoose.Schema({
     },
     balance: {
         type: Number,
+    },
+    twoFASecret: {
+        type: String
     }
 });
 
