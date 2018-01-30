@@ -12,7 +12,7 @@ register.post('/register', (req, res) => {
         User.create(userData, (err, user) => {
             if(err) return res.send(err);
             SeedPair.createSeedPair(user.username, function(){
-                return res.send('User Created');
+                return res.status(200).send('User created Successfully');
             })
         })
     }

@@ -11,10 +11,19 @@ bet.post('/bet', (req, res) => {
             if(!result) return console.log('Access Token not found');
             username = result.user_id;
             Bet.makeBet(username, amount, condition, target, function (bet) {
-                if(bet)
-                    res.send('Bet Made Successfully');
+                if(bet === 'You don\'t have enough balance!'){
+                    res.status(409).send('You don\'t have enough balance!');
+                }
+                else if(bet){
+                    let resultBet = Object.assign({}, bet);
+                    delete resultBet._doc._id;
+                    delete resultBet._doc.serverSeed;
+                    delete resultBet._doc.updatedAt;
+                    delete resultBet._doc.__v;
+                    res.status(200).json(resultBet._doc);
+                }
                 else{
-                    res.send('Bet Made Unsuccessfully');
+                    res.status(500).send('Bet Made Unsuccessfully');
                 }
             })
 

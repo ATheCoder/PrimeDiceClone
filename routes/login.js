@@ -7,6 +7,7 @@ login.post('/login', (req, res) => {
         let password = req.body.password;
         User.auth(username, password, function(guid){
             if(!guid){
+                res.cookie('AccessToken', JSON.stringify(guid));
                 res.send('Login Unsuccessful')
             }
             else{
