@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const aguid = require('aguid');
 const AccessToken = require('./AccessTokenModel');
+const twoFAHelper = require('../routes/2fa/enableHelpers');
 
 mongoose.connect('mongodb://arasharbabi.com:27017/primedice');
 
@@ -24,7 +25,20 @@ let UserSchema = new mongoose.Schema({
     }
 });
 
-UserSchema.statics.auth = function (username, password, cb){
+const validatePassword = (userObject, password) => {
+    bcrypt.compare(password, userObject.password, function (err, result) {
+        return result;
+    })
+};
+
+const getUserObject = (username, cb) => {
+    User.findOne({username: username}, function (err, user) {
+        if(err) return cb(err);
+        return cb(null, user);
+    })
+};
+
+UserSchema.statics.auth = function (username, password, cb, twoFAToken){
     User.findOne({username: username}).exec(function (err, user) {
         if(err) return console.log(err);
         else if(!user) return cb(false);
