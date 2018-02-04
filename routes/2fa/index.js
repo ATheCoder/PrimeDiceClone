@@ -1,5 +1,5 @@
 const twoFA = require('express').Router();
-const generateToken = require('./generateToken');
+const generateToken = require('./generateSecret');
 const enable = require('./enable');
 const disable = require('./disable');
 

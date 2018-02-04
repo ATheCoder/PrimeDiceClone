@@ -1,0 +1,29 @@
+Domain: Arasharbabi.com
+Login: /login
+    Variables:
+        username,
+        password
+    Errors:
+        Incorrect information,
+    Success:
+        accessToken.
+Register: /register
+    Variables:
+        username,
+        password
+    Errors:
+        Username already exists
+    Success:
+        User created Successfully.
+Logout: /logout
+    Variables: accessToken
+    Success:
+        Logout successful.
+Bet: /bet
+    Variables:
+        accessToken,
+        amount: amount of the bet.
+        condition: ">" or "<"
+        target: target roll
+    Success:
+        Bet Object.

@@ -84,7 +84,7 @@ BetSchema.statics.makeBet = function (username, amount, condition, target, cb) {
             }
             payout = ((1/winChance) * (100 - 1)).toFixed(2);
             console.log('payout is: ' + payout);
-            User.update({username: username}, {$inc: {balance: (win ? +(amount * payout) : -amount)}}, function (err, user) {
+            User.update({username: username}, {$inc: {balance: (win ? +(amount * payout - amount) : -amount)}}, function (err, user) {
                 if(err){
                     console.log(err);
                     cb(false);
@@ -113,7 +113,7 @@ BetSchema.statics.makeBet = function (username, amount, condition, target, cb) {
     })
 };
 
-let Bet = mongoose.model('Bet', BetSchema);
+let Bet = mongoose.models.Bet || mongoose.model('Bet', BetSchema);
 
 module.exports = Bet;
 

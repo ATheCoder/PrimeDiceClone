@@ -20,9 +20,7 @@ enable.post('/enable', (req, res) => {
             }
         })
     }
-    else{
-        res.status(400).send('Invalid arguments; make sure you added the arguments inside the body of the request.')
-    }
+    else res.status(400).send('Invalid arguments; make sure you added the arguments inside the body of the request.');
 });
 
 module.exports = enable;

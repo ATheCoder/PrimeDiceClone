@@ -25,9 +25,13 @@ let UserSchema = new mongoose.Schema({
     }
 });
 
-const validatePassword = (userObject, password) => {
+const validatePasswordAndMakeToken = (userObject, password, cb) => {
     bcrypt.compare(password, userObject.password, function (err, result) {
-        return result;
+        if(!result) return cb(false, false);
+        createAccessToken(userObject.username, function (err, result) {
+            if(err) console.log(err);
+            return cb(null, result)
+        })
     })
 };
 
@@ -38,27 +42,50 @@ const getUserObject = (username, cb) => {
     })
 };
 
-UserSchema.statics.auth = function (username, password, cb, twoFAToken){
-    User.findOne({username: username}).exec(function (err, user) {
-        if(err) return console.log(err);
-        else if(!user) return cb(false);
-        bcrypt.compare(password, user.password, function(err, result){
-            if(result === true){
-                let guid = aguid();
-                AccessToken.create({user_id: user.username, accessToken: guid}, function(err, newAccess){
-                    if(err) return console.log(err);
-                    if(newAccess){
-                        return cb(guid)
-                    }
-                    else{
-                        return cb(false);
-                    }
-                });
-            }
-            else{
-                return cb(false)
-            }
+const createAccessToken = (username, cb) => {
+    let guid = aguid();
+    findAccessToken(username, function (err, accessToken) {
+        if(err) cb(err);
+        if(!accessToken){
+            AccessToken.create({user_id: username, accessToken: guid}, function(err, newAccess){
+                if(err) return cb(err);
+                return cb(null, guid)
+            });
+        }
+        else accessToken.update({$set: {accessToken: guid}}, function (err, newAccess) {
+            if(err) return cb(err);
+            return cb(null, guid)
         })
+    })
+};
+
+const findAccessToken = (username, cb) => {
+    AccessToken.findOne({user_id: username}, function (err, foundToken) {
+        if(err) return cb(err);
+        return cb(null, foundToken);
+    })
+};
+
+UserSchema.statics.auth = function (username, password, cb, twoFAToken){
+    getUserObject(username, function (err, userObject) {
+        if(err) return console.log(err);
+        else if(!userObject) return cb(null, null);
+        switch(true){
+            case userObject.twoFASecret === undefined:
+                validatePasswordAndMakeToken(userObject, password, function (err, result) {
+                    if(err) return cb(err);
+                    cb(null, result);
+                });
+                break;
+            case !!userObject.twoFASecret:
+                if(twoFAHelper.validate2FAToken(userObject.twoFASecret, twoFAToken)){
+                    validatePasswordAndMakeToken(userObject, password, function (err, result) {
+                        if(err) return cb(err);
+                        return cb(null, result);
+                    })
+                }
+                else return cb(null, null);
+        }
     })
 };
 
@@ -71,7 +98,7 @@ UserSchema.pre('save', function(next) {
     })
 });
 
-let User = mongoose.model('User', UserSchema);
+let User = mongoose.models.User || mongoose.model('User', UserSchema);
 
 module.exports = User;
 

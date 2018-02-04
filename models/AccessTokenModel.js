@@ -17,22 +17,12 @@ let AccessTokenSchema = new mongoose.Schema({
     }
 });
 
-AccessTokenSchema.statics.logout = function(username, accessToken, cb){
-    AccessToken.findOne({user_id: username}).exec(function (err, user){
-        if(err) return console.log(err);
-        if(!user) return cb(false);
-        bcrypt.compare(accessToken, user.accessToken, function(err, result){
-            if(err) return console.log(err)
-            if(result === true){
-                user.remove();
-                let result = true;
-                return cb(result)
-            }
-            else{
-                let result = false;
-                return cb(result);
-            }
-        })
+AccessTokenSchema.statics.logout = function(accessToken, cb){
+    AccessToken.remove({accessToken: accessToken}, function (err) {
+        if(err) cb(false);
+        else{
+            cb(true);
+        }
     })
 };
 
@@ -47,7 +37,7 @@ AccessTokenSchema.statics.logout = function(username, accessToken, cb){
 //
 // });
 
-let AccessToken = mongoose.model('AccessToken', AccessTokenSchema);
+let AccessToken = mongoose.models.AccessToken || mongoose.model('AccessToken', AccessTokenSchema);
 
 module.exports = AccessToken;
 

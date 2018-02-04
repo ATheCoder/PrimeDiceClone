@@ -31,6 +31,6 @@ PaymentAddressSchema.statics.searchOne = function (username, cb) {
     })
 }
 
-let PaymentAddress = mongoose.model('PaymentAddress', PaymentAddressSchema);
+let PaymentAddress = mongoose.models.PaymentAddress || mongoose.model('PaymentAddress', PaymentAddressSchema);
 
 module.exports = PaymentAddress;

@@ -60,7 +60,7 @@ SeedPairSchema.pre('save', function (next) {
 });
 
 
-let SeedPair = mongoose.model('SeedPair', SeedPairSchema);
+let SeedPair = mongoose.models.SeedPair || mongoose.model('SeedPair', SeedPairSchema);
 
 module.exports = SeedPair;
 

@@ -2,18 +2,18 @@ const logout = require('express').Router();
 const AccessToken = require('../models/AccessTokenModel');
 
 logout.post('/logout', (req, res) => {
-    if(req.body.username && req.body.accessToken){
+    if(req.body.accessToken){
         let accessToken = req.body.accessToken;
-        let username = req.body.username;
-        AccessToken.logout(username, accessToken, function (result) {
+        AccessToken.logout(accessToken, function (result) {
             if(!result){
-                res.send('Logout Unsuccessful')
+                res.status(400).send('Logout Unsuccessful')
             }
             else{
-                res.send('Logout Successful')
+                res.status(200).send('Logout successful')
             }
         })
     }
+    else res.status(400).send('Invalid arguments; make sure you added the arguments inside the body of the request.');
 });
 
 module.exports = logout;

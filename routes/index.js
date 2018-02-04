@@ -6,6 +6,7 @@ const bet = require('./bet');
 const deposit = require('./deposit');
 const processPayment = require('./processpayment');
 const twoFA = require('./2fa/index');
+const users = require('./users');
 
 index.use('/', login);
 index.use('/', logout);
@@ -14,5 +15,6 @@ index.use('/', bet);
 index.use('/', deposit);
 index.use('/', processPayment);
 index.use('/', twoFA);
+index.use('/', users);
 
 module.exports = index;

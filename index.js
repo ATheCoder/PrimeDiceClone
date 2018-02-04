@@ -9,6 +9,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use('/', routes);
 
-app.listen(80, () => {
-    console.log('Listening on port 80');
-});
+if(!module.parent){
+    app.listen(80, () => {
+        console.log('Listening on port 80');
+    });
+}
+
+module.exports = app;

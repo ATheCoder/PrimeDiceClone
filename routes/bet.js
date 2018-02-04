@@ -12,7 +12,7 @@ bet.post('/bet', (req, res) => {
             username = result.user_id;
             Bet.makeBet(username, amount, condition, target, function (bet) {
                 if(bet === 'You don\'t have enough balance!'){
-                    res.status(409).send('You don\'t have enough balance!');
+                    res.status(409).send('Insufficient funds');
                 }
                 else if(bet){
                     let resultBet = Object.assign({}, bet);
