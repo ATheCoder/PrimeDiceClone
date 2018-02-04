@@ -15,12 +15,14 @@ deposit.post('/deposit', (req, res) => {
                         let callbackURL = 'http://127.0.0.1/processPayment?secret=Zr9kRxthTYWgcjQg';
                         axios.get('https://blockchainapi.org/api/receive?method=create&address=1MqDMWugrXqNt371EtEBFX3vAcTNamhc9i&callback=' + callbackURL).then(function (response) {
                             let result = {};
-                            PaymentAddress.create({username: accessTokenObject.user_id, address: response.data.input_address}, function (err, res) {
-                                console.log('DANK')
+                            PaymentAddress.create({username: accessTokenObject.user_id, address: response.data.input_address}, function (err, endResult) {
+                                if(err) return console.log(err);
+                                if(endResult){
+                                    result.address = response.data.input_address;
+                                    console.log(response.data);
+                                    res.status(200).json(result);
+                                }
                             });
-                            result.address = response.data.input_address;
-                            console.log(response.data);
-                            res.status(200).json(result);
                         })
                     }
                     else{
