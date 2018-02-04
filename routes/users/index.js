@@ -1,6 +1,6 @@
-const index = require('express').Router();
-const me = require('./me');
+const index = require('express').Router()
+const me = require('./me')
 
-index.use('/users', me);
+index.use('/users', me)
 
-module.exports = index;
+module.exports = index
