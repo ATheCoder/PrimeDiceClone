@@ -19,7 +19,6 @@ deposit.post('/deposit', (req, res) => {
                 if (err) return console.log(err)
                 if (endResult) {
                   result.address = response.data.input_address
-                  console.log(response.data)
                   res.status(200).json(result)
                 }
               })

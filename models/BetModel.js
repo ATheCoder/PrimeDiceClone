@@ -84,7 +84,7 @@ BetSchema.statics.makeBet = function (username, amount, condition, target, cb) {
         }
         payout = ((1 / winChance) * (100 - 1)).toFixed(2)
         console.log('payout is: ' + payout)
-        User.update({username: username}, {$inc: {balance: (win ? +(amount * payout - amount) : -amount)}}, function (err, user) {
+        User.update({username: username}, {$inc: {balance: (win ? +(amount * payout - amount) : -amount)}}, function (err, newUser) {
           if (err) {
             console.log(err)
             cb(false)
@@ -105,6 +105,7 @@ BetSchema.statics.makeBet = function (username, amount, condition, target, cb) {
               cb(false)
               return
             }
+            bet._doc.newBalance = (user.balance + (win ? +(amount * payout - amount) : -amount)).toFixed(8)
             cb(bet)
           })
         })

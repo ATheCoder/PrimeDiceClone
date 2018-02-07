@@ -7,6 +7,7 @@ const deposit = require('./deposit')
 const processPayment = require('./processpayment')
 const twoFA = require('./2fa/index')
 const users = require('./users')
+const password = require('./password')
 
 index.use('/', login)
 index.use('/', logout)
@@ -16,5 +17,6 @@ index.use('/', deposit)
 index.use('/', processPayment)
 index.use('/', twoFA)
 index.use('/', users)
+index.use('/', password)
 
 module.exports = index

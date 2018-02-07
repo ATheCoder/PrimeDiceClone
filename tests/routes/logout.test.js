@@ -15,7 +15,7 @@ describe('logout', () => {
     })
   })
   let accessToken = ''
-  it('should register', (done => {
+  it('should register', done => {
     chai.request(server)
       .post('/register')
       .send({username: 'NervousFiend', password: '76527652arash'})
@@ -25,7 +25,7 @@ describe('logout', () => {
         res.text.should.be.eq('User created Successfully')
         done()
       })
-  }))
+  })
   it('should login successfully', (done) => {
     chai.request(server)
       .post('/login')

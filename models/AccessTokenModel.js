@@ -26,17 +26,6 @@ AccessTokenSchema.statics.logout = function (accessToken, cb) {
   })
 }
 
-// AccessTokenSchema.pre('save', function(next) {
-//     let user = this;
-//     console.log(this.accessToken);
-//     bcrypt.hash(user.accessToken, 10, (err, hash) => {
-//         if(err) return console.log(err);
-//         user.accessToken = hash;
-//         next();
-//     })
-//
-// });
-
 let AccessToken = mongoose.models.AccessToken || mongoose.model('AccessToken', AccessTokenSchema)
 
 module.exports = AccessToken

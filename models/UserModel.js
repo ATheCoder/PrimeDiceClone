@@ -89,6 +89,17 @@ UserSchema.statics.auth = function (username, password, cb, twoFAToken) {
   })
 }
 
+UserSchema.methods.changePassword = function (newPassword, cb) {
+  let user = this
+  bcrypt.hash(newPassword, 10, (err, hash) => {
+    if (err) console.log(err)
+    user.update({$set: {password: hash}}, function (err, message) {
+      if (err) console.log(err)
+      cb(true)
+    })
+  })
+}
+
 UserSchema.pre('save', function (next) {
   let user = this
   bcrypt.hash(user.password, 10, (err, hash) => {

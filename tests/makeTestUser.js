@@ -1,21 +1,18 @@
-let chai = require('chai');
-let chaiHttp = require('chai-http');
-let server = require('../index');
-let should = chai.should();
+const User = require('../models/UserModel')
+const mongoose = require('mongoose')
 
-chai.use(chaiHttp);
-
-
-makeTestUser = (done) => {
-    chai.request(server)
-        .post('/register')
-        .send({username: 'NervousFiend', password: '76527652arash'});
-    chai.request(server)
-        .post('/login')
-        .send({username: 'NervousFiend', password: '76527652arash'})
-        .end((err, res) => {
-            return res.body;
+async function makeTestUser (balanceAmount, cb) {
+  mongoose.connect('mongodb://arasharbabi.com:27017/primedice', function () {
+    mongoose.connection.db.dropDatabase().then(() => {
+      User.create({username: 'NervousFiend', password: '76527652arash', balance: balanceAmount}, function (err, newUser) {
+        if (err) console.log(err)
+        User.auth(newUser.username, '76527652arash', function (err, accessToken) {
+          if (err) console.log(err)
+          cb(accessToken)
         })
-};
+      })
+    })
+  })
+}
 
-module.exports = makeTestUser;
+module.exports = makeTestUser
