@@ -3,8 +3,6 @@ const User = require('./UserModel')
 const seedGenerator = require('../seedGenerator')
 const HashJS = require('hash.js')
 
-mongoose.connect('mongodb://arasharbabi.com:27017/primedice')
-
 let SeedPairSchema = new mongoose.Schema({
   username: {
     type: String,

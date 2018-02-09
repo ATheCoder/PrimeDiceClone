@@ -4,8 +4,6 @@ const aguid = require('aguid')
 const AccessToken = require('./AccessTokenModel')
 const twoFAHelper = require('../routes/2fa/enableHelpers')
 
-mongoose.connect('mongodb://arasharbabi.com:27017/primedice')
-
 let UserSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -112,6 +110,10 @@ UserSchema.methods.changePassword = function (newPassword, cb) {
 
 UserSchema.pre('save', function (next) {
   let user = this
+  if (!user.displayName) {
+    user.displayName = user.username
+  }
+  user.username = user.username.toLowerCase()
   bcrypt.hash(user.password, 10, (err, hash) => {
     if (err) return console.log(err)
     user.password = hash

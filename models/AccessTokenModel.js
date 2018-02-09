@@ -1,8 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
-mongoose.connect('mongodb://arasharbabi.com:27017/primedice')
-
 let AccessTokenSchema = new mongoose.Schema({
   user_id: {
     type: String,

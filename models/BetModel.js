@@ -3,8 +3,6 @@ const SeedPair = require('./SeedPairModel')
 const showRoll = require('../showRoll')
 const User = require('./UserModel')
 
-mongoose.connect('mongodb://arasharbabi.com:27017/primedice')
-
 let BetSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -45,13 +43,19 @@ let BetSchema = new mongoose.Schema({
 {timestamps: true})
 
 BetSchema.statics.makeBet = function (username, amount, condition, target, cb) {
-  console.log('Username is: ' + username)
-  User.findOne({username: username}).exec(function (err, user) {
+  console.time('MakeBet')
+  console.time('findUser')
+  User.findOne({ username }).exec(function (err, user) {
+    console.timeEnd('findUser')
+    console.time('checkBalance')
     if (err) return console.log(err)
     if (!user) return console.log('User not found!')
     if (user.balance < amount) return cb('You don\'t have enough balance!')
     if (user.balance >= amount) {
-      SeedPair.findOne({username: username}).exec(function (err, seedPair) {
+      console.timeEnd('checkBalance')
+      console.time('findSeedPair')
+      SeedPair.findOne({ username }).exec(function (err, seedPair) {
+        console.timeEnd('findSeedPair')
         if (err) {
           console.log(err)
           cb(false)
@@ -62,8 +66,8 @@ BetSchema.statics.makeBet = function (username, amount, condition, target, cb) {
           cb(false)
           return
         }
+        console.time('calRoll')
         let roll = showRoll(seedPair.serverSeed, seedPair.clientSeed, seedPair.nonce)
-        console.log('nonce: ' + seedPair.nonce)
         seedPair.nonce++
         seedPair.save()
         let win = false
@@ -83,29 +87,34 @@ BetSchema.statics.makeBet = function (username, amount, condition, target, cb) {
             }
         }
         payout = ((1 / winChance) * (100 - 1)).toFixed(2)
-        console.log('payout is: ' + payout)
-        User.update({username: username}, {$inc: {balance: (win ? +(amount * payout - amount) : -amount)}}, function (err, newUser) {
+        console.timeEnd('calRoll')
+        console.time('updateBalance')
+        User.update({ username }, { $inc: { balance: (win ? +(amount * payout - amount) : -amount) } }, function (err, newUser) {
+          console.timeEnd('updateBalance')
           if (err) {
             console.log(err)
             cb(false)
             return
           }
-          Bet.create({username: username,
+          console.time('makeBetDB')
+          Bet.create({ username,
             BetAmount: amount,
             RollNumber: roll,
             Win: win,
             clientSeed: seedPair.clientSeed,
             serverSeed: seedPair.serverSeed,
             serverSeedEncrypted: seedPair.serverSeedEncrypted,
-            condition: condition,
-            target: target
+            condition,
+            target
           }, function (err, bet) {
+            console.timeEnd('makeBetDB')
             if (err) {
               console.log(err)
               cb(false)
               return
             }
             bet._doc.newBalance = (user.balance + (win ? +(amount * payout - amount) : -amount)).toFixed(8)
+            console.timeEnd('MakeBet')
             cb(bet)
           })
         })

@@ -1,8 +1,6 @@
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://arasharbabi.com:27017/primedice')
-
-PaymentAddressSchema = new mongoose.Schema({
+let PaymentAddressSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true

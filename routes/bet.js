@@ -6,6 +6,7 @@ const cors = require('cors')
 bet.use(cors())
 
 bet.post('/bet', (req, res) => {
+  console.time('startBetRoute')
   if (req.body.accessToken && req.body.amount && req.body.condition && req.body.target) {
     let {accessToken, amount, condition, target} = req.body
     let username = ''
@@ -23,6 +24,7 @@ bet.post('/bet', (req, res) => {
             delete resultBet._doc.serverSeed
             delete resultBet._doc.updatedAt
             delete resultBet._doc.__v
+            console.timeEnd('startBetRoute')
             res.status(200).json(resultBet._doc)
           } else {
             res.status(500).send('Bet Made Unsuccessfully')
