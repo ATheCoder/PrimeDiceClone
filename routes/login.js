@@ -1,6 +1,9 @@
 const login = require('express').Router()
 const User = require('../models/UserModel')
 const Helper = require('./helper')
+const compression = require('compression')
+
+login.use(compression())
 
 login.post('/login', (req, res) => {
   if (req.body.username && req.body.password) {

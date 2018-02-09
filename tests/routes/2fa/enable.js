@@ -16,32 +16,10 @@ describe('Two factor authentication Enable', () => {
   })
   let accessToken = ''
   before((done) => {
-    mongoose.connect('mongodb://arasharbabi.com:27017/primedice', function () {
-      mongoose.connection.db.dropDatabase().then(() => {
-        done()
-      })
+    makeTestUser(0.1, function (newAccessToken) {
+      accessToken = newAccessToken
+      done()
     })
-  })
-  it('should register', done => {
-    chai.request(server)
-      .post('/register')
-      .send({username: 'NervousFiend', password: '76527652arash'})
-      .end((err, res) => {
-        res.should.have.status(200)
-        res.text.should.be.eq('User created Successfully')
-        done()
-      })
-  })
-  it('should give accessToken', (done) => {
-    chai.request(server)
-      .post('/login')
-      .send({username: 'NervousFiend', password: '76527652arash'})
-      .end((err, res) => {
-        res.should.have.status(200)
-        res.body.should.be.a('string')
-        accessToken = res.body
-        done()
-      })
   })
   describe('show appropriate error message', () => {
     it('Invalid 2FA Token', () => {

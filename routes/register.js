@@ -7,9 +7,9 @@ register.post('/register', (req, res) => {
     let userData = {
       username: req.body.username,
       password: req.body.password,
-      balance: 0
+      displayName: req.body.username
     }
-    User.findOne({username: req.body.username}, function (err, result) {
+    User.findOne({username: req.body.username.toLowerCase()}, function (err, result) {
       if (err) console.log(err)
       if (result) {
         res.status(400).send('Username already exists')

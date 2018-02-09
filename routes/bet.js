@@ -1,6 +1,9 @@
 const bet = require('express').Router()
 const AccessToken = require('../models/AccessTokenModel')
 const Bet = require('../models/BetModel')
+const cors = require('cors')
+
+bet.use(cors())
 
 bet.post('/bet', (req, res) => {
   if (req.body.accessToken && req.body.amount && req.body.condition && req.body.target) {

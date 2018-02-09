@@ -25,14 +25,30 @@ describe('/login', () => {
         done()
       })
   })
-  it('should give accessToken', (done) => {
+  it('should give accessToken when case is right', (done) => {
     chai.request(server)
       .post('/login')
       .send({username: 'NervousFiend', password: '76527652arash'})
       .end((err, res) => {
         if (err) console.log(err)
         res.should.have.status(200)
-        res.body.should.be.a('string')
+        res.body.should.be.an('object')
+        res.body.should.have.property('accessToken')
+        res.body.should.have.property('displayName')
+        res.body.should.have.property('balance')
+        done()
+      })
+  })
+  it('should give accessToken when username case is not right', (done) => {
+    chai.request(server)
+      .post('/login')
+      .send({username: 'nervousfiend', password: '76527652arash'})
+      .end((err, res) => {
+        if (err) console.log(err)
+        res.should.have.status(200)
+        res.body.should.be.an('object')
+        res.body.should.have.property('accessToken')
+        res.body.should.have.property('displayName')
         done()
       })
   })

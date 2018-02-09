@@ -11,14 +11,23 @@ let UserSchema = new mongoose.Schema({
     type: String,
     unique: true,
     required: true,
-    trim: true
+    trim: true,
+    lowercase: true
+  },
+  displayName: {
+    type: String,
+    required: true,
+    trim: true,
+    unique: true
   },
   password: {
     type: String,
     required: true
   },
   balance: {
-    type: Number
+    type: Number,
+    required: true,
+    default: 0
   },
   twoFASecret: {
     type: String
@@ -68,6 +77,7 @@ const findAccessToken = (username, cb) => {
 }
 
 UserSchema.statics.auth = function (username, password, cb, twoFAToken) {
+  username = username.toLowerCase()
   getUserObject(username, function (err, userObject) {
     if (err) return console.log(err)
     else if (!userObject) return cb(null, null)

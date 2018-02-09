@@ -3,38 +3,17 @@ let chaiHttp = require('chai-http')
 let mongoose = require('mongoose')
 let server = require('../../../index')
 let should = chai.should()
+let makeTestUser = require('../../makeTestUser')
 
 chai.use(chaiHttp)
 
 describe('users', () => {
   let accessToken = ''
   before(done => {
-    mongoose.connect('mongodb://arasharbabi.com:27017/primedice', function () {
-      mongoose.connection.db.dropDatabase().then(() => {
-        done()
-      })
+    makeTestUser(0, function (newAccessToken) {
+      accessToken = newAccessToken
+      done()
     })
-  })
-  it('should register', done => {
-    chai.request(server)
-      .post('/register')
-      .send({username: 'NervousFiend', password: '76527652arash'})
-      .end((err, res) => {
-        res.should.have.status(200)
-        res.text.should.be.eq('User created Successfully')
-        done()
-      })
-  })
-  it('should login successfully', (done) => {
-    chai.request(server)
-      .post('/login')
-      .send({username: 'NervousFiend', password: '76527652arash'})
-      .end((err, res) => {
-        res.should.have.status(200)
-        res.body.should.be.a('string')
-        accessToken = res.body
-        done()
-      })
   })
   it('users/me', (done) => {
     chai.request(server)
