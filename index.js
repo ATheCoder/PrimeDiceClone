@@ -1,5 +1,4 @@
-const User = require('./models/UserModel')
-const AccessToken = require('./models/AccessTokenModel')
+const config = require('./config')
 const mongoose = require('mongoose')
 const express = require('express')
 const bodyParser = require('body-parser')
@@ -18,7 +17,7 @@ app.use(function (req, res, next) {
   next()
 })
 
-mongoose.connect('mongodb://arasharbabi.com:27017/primedice', (error) => {
+mongoose.connect(config.databaseURL, (error) => {
   if (error) {
     console.error('Please make sure Mongodb is installed and running!') // eslint-disable-line no-console
     throw error
@@ -28,8 +27,9 @@ mongoose.connect('mongodb://arasharbabi.com:27017/primedice', (error) => {
 })
 
 if (!module.parent) {
-  app.listen(80, () => {
-    console.log('Listening on port 80')
+  let port = config.port
+  app.listen(port, () => {
+    console.log('Listening on port ' + port)
   })
 }
 

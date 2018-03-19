@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --watch --recursive ./tests/"
+    "test": "jest --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/jest": "^22.2.0",
     "aguid": "^2.0.0",
     "axios": "^0.17.1",
     "bcrypt": "^1.0.3",
@@ -21,7 +22,10 @@
     "cors": "^2.8.4",
     "express": "^4.16.2",
     "hash.js": "^1.1.3",
+    "moment": "^2.21.0",
     "mongoose": "^5.0.1",
+    "nodemailer": "^4.6.3",
+    "nodemailer-sendgrid-transport": "^0.2.0",
     "nodemon": "^1.14.11",
     "qrcode": "^1.2.0",
     "speakeasy": "^2.0.0",
@@ -35,6 +39,7 @@
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
+    "jest": "^22.4.2",
     "supertest": "^3.0.0"
   }
 }

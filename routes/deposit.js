@@ -5,26 +5,21 @@ const PaymentAddress = require('../models/PaymentAddressModel')
 
 deposit.post('/deposit', (req, res) => {
   if (req.body.accessToken) {
-    AccessToken.findOne({accessToken: req.body.accessToken}, function (err, accessTokenObject) {
-      if (err) return console.log(err)
+    AccessToken.findOne({accessToken: req.body.accessToken}).exec().then((accessTokenObject) => {
       if (!accessTokenObject) res.status(404).send('Access Token Not Found!')
       else {
-        PaymentAddress.searchOne(accessTokenObject.user_id, function (err, searchResult) {
-          if (err) res.send(err)
-          else if (!searchResult) {
+        PaymentAddress.searchOne(accessTokenObject.user_id).then((searchResult) => {
+          if (!searchResult) {
             let callbackURL = 'http://127.0.0.1/processPayment?secret=Zr9kRxthTYWgcjQg'
-            axios.get('https://blockchainapi.org/api/receive?method=create&address=1MqDMWugrXqNt371EtEBFX3vAcTNamhc9i&callback=' + callbackURL).then(function (response) {
-              let result = {}
-              PaymentAddress.create({username: accessTokenObject.user_id, address: response.data.input_address}, function (err, endResult) {
-                if (err) return console.log(err)
-                if (endResult) {
-                  result.address = response.data.input_address
-                  res.status(200).json(result)
-                }
-              })
-            })
+            return axios.get('https://blockchainapi.org/api/receive?method=create&address=1MqDMWugrXqNt371EtEBFX3vAcTNamhc9i&callback=' + callbackURL)
           } else {
             res.status(200).json(searchResult)
+          }
+        }).then(response => {
+          if (response) return PaymentAddress.create({username: accessTokenObject.user_id, address: response.data.input_address})
+        }).then(endResult => {
+          if (endResult) {
+            res.status(200).json(endResult)
           }
         })
       }

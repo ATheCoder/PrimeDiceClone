@@ -4,24 +4,11 @@ const seedGenerator = require('../seedGenerator')
 const HashJS = require('hash.js')
 
 let SeedPairSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true
-  },
-  serverSeed: {
-    type: String
-  },
-  clientSeed: {
-    type: String
-  },
-  serverSeedEncrypted: {
-    type: String
-  },
-  nonce: {
-    type: Number
-  }
+  username: {type: String, required: true, unique: true, trim: true},
+  serverSeed: {type: String},
+  clientSeed: {type: String},
+  serverSeedEncrypted: {type: String},
+  nonce: {type: Number}
 },
 {timestamps: true})
 

@@ -4,41 +4,15 @@ const showRoll = require('../showRoll')
 const User = require('./UserModel')
 
 let BetSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  BetAmount: {
-    type: Number,
-    required: true
-  },
-  RollNumber: {
-    type: Number
-  },
-  Win: {
-    type: Boolean
-  },
-  clientSeed: {
-    type: String,
-    required: true
-  },
-  serverSeedEncrypted: {
-    type: String,
-    required: true
-  },
-  serverSeed: {
-    type: String
-  },
-  condition: {
-    type: String,
-    required: true
-  },
-  target: {
-    type: Number,
-    required: true
-  }
-
+  username: {type: String, required: true, trim: true},
+  BetAmount: {type: Number, required: true},
+  RollNumber: {type: Number},
+  Win: {type: Boolean},
+  clientSeed: {type: String, required: true},
+  serverSeedEncrypted: {type: String, required: true},
+  serverSeed: {type: String},
+  condition: {type: String, required: true},
+  target: {type: Number, required: true}
 },
 {timestamps: true})
 
@@ -50,8 +24,7 @@ BetSchema.statics.makeBet = function (username, amount, condition, target, cb) {
     console.time('checkBalance')
     if (err) return console.log(err)
     if (!user) return console.log('User not found!')
-    if (user.balance < amount) return cb('You don\'t have enough balance!')
-    if (user.balance >= amount) {
+    if (user.isBalanceEnough(amount)) {
       console.timeEnd('checkBalance')
       console.time('findSeedPair')
       SeedPair.findOne({ username }).exec(function (err, seedPair) {
@@ -89,7 +62,8 @@ BetSchema.statics.makeBet = function (username, amount, condition, target, cb) {
         payout = ((1 / winChance) * (100 - 1)).toFixed(2)
         console.timeEnd('calRoll')
         console.time('updateBalance')
-        User.update({ username }, { $inc: { balance: (win ? +(amount * payout - amount) : -amount) } }, function (err, newUser) {
+        let newBalance = (Math.round((user.balance + (win ? +(amount * payout - amount) : -amount)) * 100000000) / 100000000).toFixed(8)
+        User.update({ username }, { $set: { balance: newBalance } }, function (err, newUser) {
           console.timeEnd('updateBalance')
           if (err) {
             console.log(err)
@@ -113,12 +87,14 @@ BetSchema.statics.makeBet = function (username, amount, condition, target, cb) {
               cb(false)
               return
             }
-            bet._doc.newBalance = (user.balance + (win ? +(amount * payout - amount) : -amount)).toFixed(8)
+            bet._doc.newBalance = newBalance
             console.timeEnd('MakeBet')
             cb(bet)
           })
         })
       })
+    } else {
+      return cb('You don\'t have enough balance!')
     }
   })
 }
