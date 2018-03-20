@@ -9,7 +9,12 @@ passwordResetFinal.post('/passwordResetFinal', (req, res) => {
       else if (!user) res.status(400).send('Password Reset Token is Invalid or expired')
       else {
         user.changePassword(newPassword, function (result) {
-          if (result) res.status(200).send('Password was successfully changed!')
+          if (result) {
+            user.update({$set: {passwordResetToken: null, passwordResetDate: null}}, function (err) {
+              if (err) res.status(500).send('Internal Server Error')
+              else res.status(200).send('Password reset was successful!')
+            })
+          }
         })
       }
     })
