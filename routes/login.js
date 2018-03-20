@@ -22,6 +22,8 @@ login.post('/login', async (req, res) => {
             else {
               delete result._doc.password
               delete result._doc._id
+              delete result._doc.passwordResetToken
+              delete result._doc.passwordResetDate
               result._doc.accessToken = accessToken
               res.cookie('AccessToken', JSON.stringify(accessToken))
               res.status(200).json(result)
