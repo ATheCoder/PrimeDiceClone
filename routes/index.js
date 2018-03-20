@@ -11,6 +11,7 @@ const password = require('./password')
 const faucet = require('./faucet')
 const passwordReset = require('./passwordReset')
 const email = require('./email')
+const passwordResetFinal = require('./passwordResetFinal')
 
 index.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
@@ -30,5 +31,6 @@ index.use('/', password)
 index.use('/', faucet)
 index.use('/', passwordReset)
 index.use('/', email)
+index.use('/', passwordResetFinal)
 
 module.exports = index
