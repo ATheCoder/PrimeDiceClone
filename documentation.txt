@@ -1,4 +1,3 @@
-Domain: Arasharbabi.com
 Login: /login
     Variables:
         username,
